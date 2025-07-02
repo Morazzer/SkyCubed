@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skycubed.features.map.screen
+package tech.thatgravyboat.skycubed.features.map.waypoints
 
 import com.mojang.blaze3d.platform.InputConstants
 import earth.terrarium.olympus.client.components.Widgets
@@ -15,7 +15,7 @@ import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.helpers.McScreen
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
-import tech.thatgravyboat.skycubed.features.map.waypoints.Waypoints
+import tech.thatgravyboat.skycubed.features.map.screen.MapsWidget
 import kotlin.math.roundToInt
 
 object MapWaypointsScreen {
@@ -34,19 +34,21 @@ object MapWaypointsScreen {
                 .withTitle(CREATE_TITLE)
                 .withContent(CREATE_PLACEHOLDER)
                 .withContent { width -> Widgets.textInput(state).withPlaceholder("Waypoint Name").withSize(width, 20) }
-                .withAction(Widgets.button()
-                    .withRenderer(WidgetRenderers.text(UITexts.CANCEL))
-                    .withSize(80, 24)
-                    .withCallback { McScreen.self?.onClose() }
+                .withAction(
+                    Widgets.button()
+                        .withRenderer(WidgetRenderers.text(UITexts.CANCEL))
+                        .withSize(80, 24)
+                        .withCallback { McScreen.self?.onClose() },
                 )
-                .withAction(Widgets.button()
-                    .withRenderer(WidgetRenderers.text<AbstractWidget>(CREATE_BUTTON).withColor(MinecraftColors.WHITE))
-                    .withSize(80, 24)
-                    .withTexture(UIConstants.PRIMARY_BUTTON)
-                    .withCallback {
-                        Waypoints.addWaypoint(Text.of(state.get()).withColor(TextColor.BLUE), x + 0.5f, 0, z + 0.5f, DyeColor.WHITE, true)
-                        McScreen.self?.onClose()
-                    }
+                .withAction(
+                    Widgets.button()
+                        .withRenderer(WidgetRenderers.text<AbstractWidget>(CREATE_BUTTON).withColor(MinecraftColors.WHITE))
+                        .withSize(80, 24)
+                        .withTexture(UIConstants.PRIMARY_BUTTON)
+                        .withCallback {
+                            Waypoints.addWaypoint(Text.of(state.get()).withColor(TextColor.BLUE), x + 0.5f, 0, z + 0.5f, DyeColor.WHITE, true)
+                            McScreen.self?.onClose()
+                        },
                 )
                 .open()
         }
@@ -60,15 +62,17 @@ object MapWaypointsScreen {
                 waypoint != null -> ContextMenu.open { menu ->
                     menu.button(CONTEXT_DELETE) { Waypoints.removeWaypoint(waypoint) }
                 }
+
                 poi != null -> ContextMenu.open { menu ->
                     menu.button(CONTEXT_CREATE) {
                         Waypoints.addWaypoint(
                             poi.first.tooltip.firstOrNull() ?: Text.of("Waypoint"),
                             poi.first.position.x - 1f, poi.first.position.y, poi.first.position.z - 1f,
-                            DyeColor.PURPLE
+                            DyeColor.PURPLE,
                         )
                     }
                 }
+
                 else -> ContextMenu.open { menu ->
                     menu.button(CONTEXT_CREATE) {
                         val (x, z) = widget.getWorldPosition(mouseX, mouseY)

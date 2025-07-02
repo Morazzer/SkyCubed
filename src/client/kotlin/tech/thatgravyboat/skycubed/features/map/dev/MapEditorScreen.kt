@@ -1,4 +1,4 @@
-package tech.thatgravyboat.skycubed.features.map.screen
+package tech.thatgravyboat.skycubed.features.map.dev
 
 import com.mojang.blaze3d.platform.InputConstants
 import earth.terrarium.olympus.client.components.Widgets
@@ -13,9 +13,9 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.Text.send
 import tech.thatgravyboat.skycubed.api.conditions.Condition
 import tech.thatgravyboat.skycubed.features.map.Maps
-import tech.thatgravyboat.skycubed.features.map.dev.MapPoiEditScreen
 import tech.thatgravyboat.skycubed.features.map.pois.ConditionalPoi
 import tech.thatgravyboat.skycubed.features.map.pois.Poi
+import tech.thatgravyboat.skycubed.features.map.screen.MapsWidget
 
 object MapEditorScreen {
 
@@ -36,7 +36,7 @@ object MapEditorScreen {
                         .withContent { width ->
                             Widgets.dropdown(
                                 state,
-                                Poi.poiTypes.toMutableList().apply { this.add("insignificant_npc") },
+                                Poi.Companion.poiTypes.toMutableList().apply { this.add("insignificant_npc") },
                                 { Text.of(it.toString()) },
                                 {},
                             ) {
@@ -46,10 +46,10 @@ object MapEditorScreen {
                                     }
 
                                     val newPoi = if (poi == "insignificant_npc") {
-                                        val npc = Poi.createByType("npc", Vector3i()) ?: return@withCallback
-                                        ConditionalPoi(Condition.TRUE, Condition.FALSE, npc)
+                                        val npc = Poi.Companion.createByType("npc", Vector3i()) ?: return@withCallback
+                                        ConditionalPoi(Condition.Companion.TRUE, Condition.Companion.FALSE, npc)
                                     } else {
-                                        Poi.createByType(poi, Vector3i()) ?: return@withCallback
+                                        Poi.Companion.createByType(poi, Vector3i()) ?: return@withCallback
                                     }
 
                                     val pois = Maps.currentIsland?.pois ?: run {

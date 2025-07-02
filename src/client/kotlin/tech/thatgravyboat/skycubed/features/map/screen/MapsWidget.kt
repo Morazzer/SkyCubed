@@ -79,8 +79,12 @@ class MapsWidget(
 
                 maps.forEach { map ->
                     graphics.translated(map.topX + width / 2.0 + map.offsetX, map.topY + height / 2.0 + map.offsetY, 0f) {
+
                         val default = map.getDefaultTexture()
                         val texture = map.getTexture()
+                        if (MapEditor.enabled) {
+                            map.boundingBox.render(graphics, 0, 0, 0f)
+                        }
 
                         if (default != texture) {
                             shape.drawMapPart(graphics, default.getId(), map, posX, posY, width, height, scaleX, scaleY, 0xFF3F3F3F.toInt())
@@ -121,7 +125,7 @@ class MapsWidget(
                                         CommonText.EMPTY,
                                         Text.translatable("skycubed.map.waypoints.tooltip.position"),
                                         Text.of(" ${waypoint.pos.x}, ${waypoint.pos.y}, ${waypoint.pos.z}"),
-                                    )
+                                    ),
                                 )
                                 cursor = Cursor.POINTER
                             }
@@ -189,9 +193,11 @@ class MapsWidget(
         return locX in mouseX.toFloat()..mouseX + rect.width * scale && locZ in mouseY.toFloat()..mouseY + rect.height * scale
     }
 
-    fun getWaypointAt(x: Number, y: Number): Waypoint? = Maps.currentIsland?.let { Waypoints.waypoints().find { waypoint ->
-        isMouseOver(it, waypoint.toMapRect(), x.toInt() - this.x, y.toInt() - this.y)
-    } }
+    fun getWaypointAt(x: Number, y: Number): Waypoint? = Maps.currentIsland?.let {
+        Waypoints.waypoints().find { waypoint ->
+            isMouseOver(it, waypoint.toMapRect(), x.toInt() - this.x, y.toInt() - this.y)
+        }
+    }
 
     fun getPoiAt(x: Number, y: Number): Pair<Poi, IslandData>? {
         maps.forEach { map ->

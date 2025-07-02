@@ -4,6 +4,7 @@ import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.minecraft.client.gui.components.Renderable
 import net.minecraft.core.BlockPos
 import tech.thatgravyboat.skyblockapi.api.location.LocationAPI
 import tech.thatgravyboat.skyblockapi.api.location.SkyBlockIsland
@@ -12,6 +13,7 @@ import tech.thatgravyboat.skyblockapi.utils.codecs.CodecUtils
 import tech.thatgravyboat.skyblockapi.utils.codecs.EnumCodec
 import tech.thatgravyboat.skycubed.SkyCubed
 import tech.thatgravyboat.skycubed.api.conditions.Condition
+import tech.thatgravyboat.skycubed.features.map.dev.BoundingBoxWidget
 import tech.thatgravyboat.skycubed.features.map.pois.NpcPoi
 import tech.thatgravyboat.skycubed.features.map.pois.Poi
 import tech.thatgravyboat.skycubed.features.map.texture.MapImage
@@ -38,6 +40,7 @@ data class IslandData(
 
     val width = abs(bottomX - topX)
     val height = abs(bottomY - topY)
+    val boundingBox: Renderable = BoundingBoxWidget(0, 0, width, height)
 
     init {
         pois.forEach {
@@ -57,24 +60,28 @@ data class IslandData(
 
     companion object {
 
-        private val IMAGES_CODEC: Codec<Pair<Condition, MapImage>> = RecordCodecBuilder.create { it.group(
-            Condition.CODEC.fieldOf("condition").forGetter(Pair<Condition, MapImage>::first),
-            MapImage.CODEC.fieldOf("image").forGetter(Pair<Condition, MapImage>::second)
-        ).apply(it, ::Pair) }
+        private val IMAGES_CODEC: Codec<Pair<Condition, MapImage>> = RecordCodecBuilder.create {
+            it.group(
+                Condition.CODEC.fieldOf("condition").forGetter(Pair<Condition, MapImage>::first),
+                MapImage.CODEC.fieldOf("image").forGetter(Pair<Condition, MapImage>::second),
+            ).apply(it, ::Pair)
+        }
 
-        val CODEC: Codec<IslandData> = RecordCodecBuilder.create { it.group(
-            EnumCodec.of(SkyBlockIsland.entries.toTypedArray()).fieldOf("island").forGetter(IslandData::island),
-            MapImage.CODEC.fieldOf("default").forGetter(IslandData::getDefaultTexture),
-            IMAGES_CODEC.listOf().optionalFieldOf("images", listOf()).forGetter(IslandData::images),
-            Codec.INT.fieldOf("topX").forGetter(IslandData::topX),
-            Codec.INT.fieldOf("topY").forGetter(IslandData::topY),
-            Codec.INT.fieldOf("bottomX").forGetter(IslandData::bottomX),
-            Codec.INT.fieldOf("bottomY").forGetter(IslandData::bottomY),
-            Codec.INT.optionalFieldOf("offsetX", 0).forGetter(IslandData::offsetX),
-            Codec.INT.optionalFieldOf("offsetY", 0).forGetter(IslandData::offsetY),
-            Codec.INT.optionalFieldOf("playerOffsetX", 0).forGetter(IslandData::playerOffsetX),
-            Codec.INT.optionalFieldOf("playerOffsetY", 0).forGetter(IslandData::playerOffsetY),
-            CodecUtils.list(Poi.CODEC).optionalFieldOf("pois", mutableListOf()).forGetter(IslandData::pois),
-        ).apply(it, ::IslandData) }
+        val CODEC: Codec<IslandData> = RecordCodecBuilder.create {
+            it.group(
+                EnumCodec.of(SkyBlockIsland.entries.toTypedArray()).fieldOf("island").forGetter(IslandData::island),
+                MapImage.CODEC.fieldOf("default").forGetter(IslandData::getDefaultTexture),
+                IMAGES_CODEC.listOf().optionalFieldOf("images", listOf()).forGetter(IslandData::images),
+                Codec.INT.fieldOf("topX").forGetter(IslandData::topX),
+                Codec.INT.fieldOf("topY").forGetter(IslandData::topY),
+                Codec.INT.fieldOf("bottomX").forGetter(IslandData::bottomX),
+                Codec.INT.fieldOf("bottomY").forGetter(IslandData::bottomY),
+                Codec.INT.optionalFieldOf("offsetX", 0).forGetter(IslandData::offsetX),
+                Codec.INT.optionalFieldOf("offsetY", 0).forGetter(IslandData::offsetY),
+                Codec.INT.optionalFieldOf("playerOffsetX", 0).forGetter(IslandData::playerOffsetX),
+                Codec.INT.optionalFieldOf("playerOffsetY", 0).forGetter(IslandData::playerOffsetY),
+                CodecUtils.list(Poi.CODEC).optionalFieldOf("pois", mutableListOf()).forGetter(IslandData::pois),
+            ).apply(it, ::IslandData)
+        }
     }
 }

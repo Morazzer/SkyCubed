@@ -14,7 +14,9 @@ import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skycubed.features.map.Maps
 import tech.thatgravyboat.skycubed.features.map.dev.MapEditor
+import tech.thatgravyboat.skycubed.features.map.dev.MapEditorScreen
 import tech.thatgravyboat.skycubed.features.map.pois.Poi
+import tech.thatgravyboat.skycubed.features.map.waypoints.MapWaypointsScreen
 import tech.thatgravyboat.skycubed.utils.ResettingState
 
 class MapScreen : BaseCursorScreen(CommonText.EMPTY) {
