@@ -131,7 +131,7 @@ cloche {
 
                 dependency("resourcefullib", rlib.map { it.version!! })
                 dependency("olympus", olympus.map { it.version!! })
-                //dependency("resourcefulconfig", rconfig.map { it.version!! })
+                dependency("resourcefulconfig", rconfig.map { it.version!! })
 
                 dependency("skyblock-api", libs.versions.skyblockapi)
                 dependency("meowdding-lib", libs.versions.meowdding.lib)

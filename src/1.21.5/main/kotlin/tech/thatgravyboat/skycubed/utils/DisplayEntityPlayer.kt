@@ -31,6 +31,7 @@ class DisplayEntityPlayer(
         else -> ItemStack.EMPTY
     }
 
+    override fun getSkin(): PlayerSkin = if (skin.isActuallyDone) skin.get() else super.getSkin()
     override fun getMainArm(): HumanoidArm = HumanoidArm.RIGHT
 
     override fun isSpectator() = false
@@ -42,6 +43,7 @@ class DisplayEntityPlayer(
     override fun getTeam() = object : PlayerTeam(null, "display") {
         override fun getNameTagVisibility() = Visibility.NEVER
     }
+    override fun isModelPartShown(part: PlayerModelPart) = true
 }
 
 interface DisplayEntityPlayerRenderStateExtension {
